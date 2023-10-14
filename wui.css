@@ -1,0 +1,12 @@
+SearchBarWidget {
+  height: 100%;
+}
+
+OptionList {
+  height: 80%;
+  margin: 1;
+}
+
+Input {
+  margin: 1;
+}

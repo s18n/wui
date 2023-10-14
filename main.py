@@ -15,29 +15,33 @@ class SearchBarWidget(Static):
   """A search bar widget."""
 
   def compose(self) -> ComposeResult:
-    """Create child widgets of a stopwatch."""
-    yield Input(placeholder="Query", id="search_field")
+    yield Input(
+      placeholder="Type your query here...", id="search_field"
+    )
+    yield OptionList(id="result_list")
 
   @on(Input.Submitted)
-  def accept_search(self):
+  def search(self):
+    results_list = self.query_one("#result_list", OptionList)
+    results_list.clear_options()
+
     input = self.query_one(Input)
     query = input.value
     search_results = search_client.search_google(query)
-    result_option_list = OptionList()
 
     for result in search_results:
       title = Option(result["title"], disabled=True)
       link = Option(result["link"])
-      result_option_list.add_option(title)
-      result_option_list.add_option(link)
-      result_option_list.add_option(Separator())
-   
-    self.mount(result_option_list)
+      results_list.add_option(title)
+      results_list.add_option(link)
+      results_list.add_option(Separator())
+      
     input.value = ""
 
 
 class TerminalWebSearch(App):
-  """A TUI for air quality information"""
+  """A TUI for searching Google."""
+  CSS_PATH = "wui.css"
 
   def compose(self) -> ComposeResult:
     yield Header()
