@@ -2,7 +2,9 @@ from google_search import GoogleSearchClient
 from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Container
-from textual.widgets import Label, Footer, Header, Input, Static
+from textual.widgets import OptionList, Footer, Header, Input, Static
+from textual.widgets.option_list import Option, Separator
+
 
 # Google search config
 api_key = "AIzaSyDcqqHbZXp6TRxcgyphlSJaimWrdqIMwEg"
@@ -21,8 +23,16 @@ class SearchBarWidget(Static):
     input = self.query_one(Input)
     query = input.value
     search_results = search_client.search_google(query)
+    result_option_list = OptionList()
+
     for result in search_results:
-      self.mount(Label(result["link"]))
+      title = Option(result["title"], disabled=True)
+      link = Option(result["link"])
+      result_option_list.add_option(title)
+      result_option_list.add_option(link)
+      result_option_list.add_option(Separator())
+   
+    self.mount(result_option_list)
     input.value = ""
 
 
