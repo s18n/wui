@@ -1,7 +1,10 @@
+import boto3
+
 
 class Client():
-  def __init__(self, session):
-    self.dynamodb = session.client('dynamodb')
+  def __init__(self):
+    self.session = boto3.session.Session(profile_name='m30ent-root')
+    self.dynamodb = self.session.client('dynamodb')
     self.get_tables()
     self.get_recovery_points()
 

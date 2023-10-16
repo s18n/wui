@@ -3,11 +3,6 @@ from textual.app import App, ComposeResult
 from textual.containers import ScrollableContainer
 from textual.widgets import Tree, Header, Footer, Static
 from dynamodb import Client
-import boto3
-
-
-session = boto3.session.Session(profile_name='di-audit')
-dynamodb = Client(session)
 
 
 class DatabaseTree(Static):
@@ -39,4 +34,5 @@ class DynamoRecovery(App):
 
 
 if __name__ == "__main__":
+  dynamodb = Client()
   DynamoRecovery().run()
