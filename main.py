@@ -1,24 +1,21 @@
 from textual import on
 from textual.app import App, ComposeResult
-from textual.containers import ScrollableContainer
-from textual.widgets import Tree, Header, Footer, Static
+from textual.containers import Container
+from textual.widgets import Header, Footer, Static, Select, Pretty
 from dynamodb import Client
 
 
-class DatabaseTree(Static):
-
+class DatabaseSelect(Static):
   def compose(self) -> ComposeResult:
-    table_tree = {}
+    yield Select((table, table) for table in dynamodb.tables)
+    self.pretty = Pretty(None, id="database_detail", classes="box")
 
-    tree: Tree[dict] = Tree("Tables")
-    tree.show_root = not tree.show_root
-    tree.root.expand()
-    
-    for t in dynamodb.tables:
-      table_tree[t] = tree.root.add(t, expand=True)
-
-    yield tree
-
+  @on(Select.Changed)
+  def select_table(self):
+    input = self.query_one(Select)
+    database_detail = dynamodb.tables[input.value]
+    self.pretty.update(database_detail)
+    self.mount(self.pretty)
 
 
 class DynamoRecovery(App):
@@ -26,12 +23,11 @@ class DynamoRecovery(App):
   CSS_PATH = "./dynamoRecovery.css"
 
   def compose(self):
+
     yield Header(show_clock=True)
     yield Footer()
-    with ScrollableContainer(id="navigation"):
-      yield DatabaseTree()
-    self.dark = not self.dark
-
+    with Container(id="navigation"):
+      yield DatabaseSelect(classes="box")
 
 if __name__ == "__main__":
   dynamodb = Client()

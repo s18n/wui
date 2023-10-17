@@ -1,16 +1,13 @@
-Header {
-
-}
-
-Footer {
-
-}
-
-#navigation {
+#database_detail {
+  margin: 1;
   background: $boost;
-  opacity: 50%;
 }
 
-#recovery_point {
-  color: red
+Screen {
+  layout: grid;
+}
+
+.box {
+  height: 100%;
+  border: solid green;
 }
